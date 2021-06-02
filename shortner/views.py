@@ -10,10 +10,14 @@ def index(request):
 def create(request):
     if request.method == 'POST':
         link = request.POST['link']
-        uid = str(uuid.uuid4())[:5]
-        new_url = Url(link=link,uuid=uid)
-        new_url.save()
-        return HttpResponse(uid)
+        if link.startswith("https:"):
+            uid = str(uuid.uuid4())[:5]
+            new_url = Url(link=link,uuid=uid)
+            new_url.save()
+            return HttpResponse("urlshr.herokuapp.com/"+uid)
+        else:
+            return HttpResponse("Enter a valid URL")
+                    
 
 def go(request, pk):
     url_details = Url.objects.get(uuid=pk)
